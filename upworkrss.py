@@ -1,6 +1,6 @@
 # import libraries
-from email import feedparser
 from rss import RSS
+import feedparser
 import ostools
 import hashlib
 import time
@@ -11,7 +11,7 @@ import re
 # 1. Read User RSS, User Query (including adding skills and categories) ✔
 # 2. Retrive all data using feedparser ✔
 # 3. Pushed all data into database ✔
-# 4. Pull and filter specfic information
+# 4. Pull and filter specific information
 # 5. Printout the job post on the terminal
 
 class UpWorkRSS:
@@ -72,19 +72,19 @@ class UpWorkRSS:
         for key in profile:
             if key == "queries":
                 for q in profile[key]:
-                    self.rss_queries.append(update_query(q=q))
+                    self.rss_queries.append(update_query(self.param,q=q))
             elif key == "title":
                 for t in profile[key]:
-                    self.rss_queries.append(update_query(title=t))
+                    self.rss_queries.append(update_query(self.param,title=t))
             elif key == "skills":
                 for s in profile[key]:
                     skill = str(self.categories_skills['Skills'][s])
-                    self.rss_queries.append(update_query(ontology_skill_uid=skill))
+                    self.rss_queries.append(update_query(self.param,ontology_skill_uid=skill))
             elif key == "categories":
                 categories = []
                 for c in profile[key]:
                     categories.append(str(self.categories_skills['Categories'][c]))
-                self.rss_queries.append(self.update_query(subcategory2_uid=",".join(categories)))
+                self.rss_queries.append(update_query(self.param,subcategory2_uid=",".join(categories)))
     
     def gather(self,entry):
         '''
@@ -98,7 +98,7 @@ class UpWorkRSS:
 
         # assign initial value
         job = {
-            "hash": hashlib.sha256(encoded_str).hexdigest(),
+            "hash": hashlib.md5(encoded_str).hexdigest(),
             "title": format(job_title),
             "link": entry['link'].strip("?source=rss"),
             "budget": None,
@@ -139,7 +139,10 @@ class UpWorkRSS:
         # insert job into database
         ostools.insert(job)
     
-    def parser_all(self):
+    def parse_all(self):
+        '''
+        Parser all saved rss queries
+        '''
 
         # iterate gatherd queries
         for param in self.rss_queries:
@@ -147,6 +150,7 @@ class UpWorkRSS:
             # turn dictionary into url
             params = [str(k) + "=" + str(v) for k,v in param.items() if v != None]
             url = self.ref + "?" + "&".join(params)
+            url = url.replace(",","%2C").replace(" ","+")
             
             # parser url
             results = feedparser.parse(url)
@@ -158,5 +162,5 @@ class UpWorkRSS:
 if __name__ == "__main__":
 
     model = UpWorkRSS(RSS)
-    model.read_profile("profile/scraping-and-nfts.json")
-    model.parser_all()
+    model.read_profile("profile/scraping.json")
+    model.parse_all()
