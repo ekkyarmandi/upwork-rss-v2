@@ -1,8 +1,5 @@
-# Todo
-# 1. Write folders creator function
-# 2. Write database creator function
-
 import sqlite3
+import json
 import os
 
 def check_folders(path):
@@ -32,8 +29,36 @@ def create_table(database="jobs.db", table="job"):
     database = database.split("\\")[-1]
     print(f"{table} table has been created in {database}")
 
-def update_table():
-    pass
+def insert(dict):
+    def remove_none(dict):
+        for k,v in dict.items():
+            if v == None:
+                dict[k] = "null"
+        return dict
+    blacklist = json.load(open("json/blacklist-category.json"))
+    con = sqlite3.connect("database/jobs.db")
+    cur = con.cursor()
+    cur.execute(f"SELECT title FROM jobs WHERE hash = '{dict['hash']}'")
+    existing = cur.fetchone()
+    if dict['category'] not in blacklist and existing is None:
+        dict = remove_none(dict)
+        cmd = """INSERT or IGNORE INTO jobs VALUES (?,?,?,?,?,?,?,?,?,?)"""
+        cur.execute(cmd, (
+            dict['hash'],
+            dict['title'],
+            dict['description'],
+            dict['link'],
+            dict['budget'],
+            dict['posted_on'],
+            dict['category'],
+            dict['skills'],
+            dict['country'],
+            0
+        ))
+        cur.execute("UPDATE jobs SET budget = NULL where budget = 'null'")
+        cur.execute("UPDATE jobs SET skills = NULL where skills = 'null'")
+        con.commit()
+    con.close()
 
 def delete_entries():
     pass
