@@ -3,10 +3,16 @@ import json
 import os
 
 def check_folders(path):
+    '''
+    Check folder/path existence
+    '''
     if not os.path.exists(path):
         os.makedirs(path)
 
 def create_table(database="jobs.db", table="job"):
+    '''
+    Create a new table
+    '''
     con = sqlite3.connect(database)
     cur = con.cursor()
     cmd = f"""
@@ -30,7 +36,13 @@ def create_table(database="jobs.db", table="job"):
     print(f"{table} table has been created in {database}")
 
 def insert(dict):
+    '''
+    Insert data into database
+    '''
     def remove_none(dict):
+        '''
+        Change None value into null string
+        '''
         for k,v in dict.items():
             if v == None:
                 dict[k] = "null"
