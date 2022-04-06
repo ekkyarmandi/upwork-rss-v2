@@ -1,0 +1,26 @@
+{
+    "Categories":{
+        "Game & Development": 531770282589057027,
+        "Script & Utilities": 531770282589057028,
+        "Other Software Development": 531770282589057032,
+        "Desktop App Development": 531770282589057025,
+        "3D Modeling & CAD": 531770282601639948,
+        "Product Design": 531770282601639953,
+        "Game Art & AR/VR Design": 1356688560628174848,
+        "Branding Logo & Design": 1044578476142100480,
+        "Data Mining & Management": 531770282589057038,
+        "Data Extraction / ETL": 531770282593251331,
+        "Art & Illustrattion": 531770282593251335,
+        "Graphic, Editorial & Presentation Design": 531770282593251334,
+        "Audio & Music Production": 531770282593251341
+    },
+    "Skills": {
+        "SolidWorks": 1031626781625925632,
+        "Blender": 1052162208781094919,
+        "Python": 996364628025274386,
+        "Scrapy": 1031626778132070400,
+        "BeautifulSoup": 1225465931507142656,
+        "Adobe Photoshop": 1052162208852398098,
+        "Adobe Illustrator": 1052162208864981006
+    }
+}
