@@ -1,4 +1,5 @@
 # import libraries
+from tqdm import tqdm
 from rss import RSS
 import feedparser
 import ostools
@@ -20,6 +21,10 @@ class UpWorkRSS:
         self.rss_queries = []
         self.categories_skills = json.load(open("json/categories-and-skills.json"))
         self.rss_url_breakdown(rss)
+        ostools.unlive_all(
+            database="database/jobs.db",
+            table="jobs"
+        )
 
     def rss_url_breakdown(self, rss):
         '''
@@ -145,7 +150,8 @@ class UpWorkRSS:
         '''
 
         # iterate gatherd queries
-        for param in self.rss_queries:
+        bar_format = "querying rss url {percentage:3.2f}% ({elapsed_s:.2f} sec)"
+        for param in tqdm(self.rss_queries, bar_format=bar_format):
             
             # turn dictionary into url
             params = [str(k) + "=" + str(v) for k,v in param.items() if v != None]
@@ -164,3 +170,5 @@ if __name__ == "__main__":
     model = UpWorkRSS(RSS)
     model.read_profile("profile/scraping.json")
     model.parse_all()
+
+    ostools.print_entries(time_constrain=2,time_unit="hour")
