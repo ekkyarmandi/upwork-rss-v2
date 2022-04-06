@@ -1,13 +1,17 @@
 # necessary libraries
 import argparse
+from venv import create
 import ostools
-import json
 
 # UpWorkRSS class
 from upworkrss import UpWorkRSS
 from rss import RSS
 
 parser = argparse.ArgumentParser(description="UpWork RSS Tools")
+
+parser.set_defaults(create_database=False)
+parser.set_defaults(query=False)
+
 subparser = parser.add_subparsers()
 
 databases = subparser.add_parser(
@@ -50,7 +54,6 @@ query.add_argument(
 )
 
 args = parser.parse_args()
-print(args)
 
 if args.create_database:
 
@@ -60,7 +63,10 @@ if args.create_database:
     ostools.check_folders(db_path)
 
     # create the database
-    ostools.create_table(database=args.output, table=args.table)
+    ostools.create_table(
+        database=args.output,
+        table=args.table
+    )
 
 elif args.query:
 
@@ -69,5 +75,6 @@ elif args.query:
     model.read_profile(
         path=args.profile
     )
+    model.parse_all()
 
     # printout the results
