@@ -58,9 +58,7 @@ def insert(dict):
     blacklist = json.load(open("json/blacklist-category.json"))
     con = sqlite3.connect("database/jobs.db")
     cur = con.cursor()
-    cur.execute(f"SELECT title FROM jobs WHERE hash = '{dict['hash']}'")
-    existing = cur.fetchone()
-    if dict['category'] not in blacklist and existing is None:
+    if dict['category'] not in blacklist:
         dict = remove_none(dict)
         cmd = """INSERT or IGNORE INTO jobs VALUES (?,?,?,?,?,?,?,?,?,?)"""
         cur.execute(cmd, (
@@ -75,8 +73,8 @@ def insert(dict):
             dict['country'],
             0
         ))
-        cur.execute("UPDATE jobs SET budget = NULL where budget = 'null'")
-        cur.execute("UPDATE jobs SET skills = NULL where skills = 'null'")
+        cur.execute("UPDATE jobs SET budget = NULL WHERE budget = 'null'")
+        cur.execute("UPDATE jobs SET skills = NULL WHERE skills = 'null'")
         con.commit()
     con.close()
 
@@ -105,8 +103,6 @@ def query_all(database,table,time_constrain,time_unit):
             "category": j[2],
             "live": j[3]
         }
-        post_date = datetime.fromttimestamp(job['timestamp'])
-        post_date = post_date.strftime("%H:%M:%S %d %b %Y")
         difftime = int((now.timestamp()-job['timestamp'])/divider)
         if difftime <= time_constrain and job['category'] not in blacklist and job['live'] == 0:
             cur.execute(f"UPDATE {table} SET live = 1 WHERE hash=?",(job['hash'],))
@@ -127,6 +123,11 @@ def unlive_all(database,table):
     con.close()
 
 def print_entries(time_constrain, time_unit):
+    '''
+    Print all entries
+    :param time_constrain: int -> Time constrain for filtering the jobs
+    :param time_unit: str -> Time unit for time constrain
+    '''
 
     # query and filter jobs
     jobs = query_all(
@@ -138,49 +139,24 @@ def print_entries(time_constrain, time_unit):
 
     # printout all jobs
     for job in jobs:
-        pass
-
-def sec2hms(sec):
-    '''
-    Converting seconds to Hours and Minute
-    :param sec: int -> seconds
-    :return timestr: str -> formatted seconds
-    '''
-    m, _ = divmod(sec, 60)
-    if m <= 60:
-        if m == 1: return f"{int(m):d} minute ago"
-        else: return f"{int(m):d} minutes ago"
-    elif m > 60:
-        h, m = divmod(m, 60)
-        if m == 1: return f"{int(h):d} hours and {int(m):d} minute ago"
-        else: return f"{int(h):d} hours and {int(m):d} minutes ago"
-
-def print_output(results,initial=False):
-    '''
-    Printout the retrived jobs.
-    :param results: list -> List of jobs
-    '''
-    now = time.time()
-    for i in range(len(results)):
-        result = results[i]
-        output = {
-            "title": result[1],
-            "description": result[2],
-            "link": result[3],
-            "budget": result[4],
-            "timestamp": sec2hms(now-result[5]),
-            "category": result[6],
-            "skills": result[7],
-            "country": result[8]
+        result = {
+            "title": job[1],
+            "description": job[2],
+            "link": job[3],
+            "budget": job[4],
+            "timestamp": datetime.fromtimestamp(job[5]),
+            "category": job[6],
+            "skills": job[7],
+            "country": job[8]
         }
-        output['description'] = re.sub("\s+"," ",output['description']).strip()
-        if len(output['description']) > 360:
-            output['description'] = output['description'][:360].strip(".").strip() + "..."
-        if output['budget'] == None:
-            output['budget'] = "Budget Unknown"
-        print(f"{Fore.BLACK + Back.WHITE + output['title'] + Style.RESET_ALL} | {Fore.BLUE + output['category'] + Style.RESET_ALL} | {Fore.GREEN + output['budget'] + Style.RESET_ALL} ({output['timestamp']})")
-        print(f"{Fore.YELLOW + output['description'] + Style.RESET_ALL}")
-        print(f"Link: {Fore.CYAN + output['link'] + Style.RESET_ALL}")
-        print(f"Skills: {output['skills']}")
-        print(f"Country: {Fore.CYAN + Back.MAGENTA + output['country'] + Style.RESET_ALL}")
+        result['description'] = re.sub("\s+"," ",result['description']).strip()
+        if len(result['description']) > 360:
+            result['description'] = result['description'][:360].strip(".").strip() + "..."
+        if result['budget'] == None:
+            result['budget'] = "Budget Unknown"
+        print(f"{Fore.BLACK + Back.WHITE + result['title'] + Style.RESET_ALL} | {Fore.BLUE + result['category'] + Style.RESET_ALL} | {Fore.GREEN + result['budget'] + Style.RESET_ALL} ({result['timestamp'].strftime('%d/%m/%Y %H:%M:%S')})")
+        print(f"{Fore.YELLOW + result['description'] + Style.RESET_ALL}")
+        print(f"Link: {Fore.CYAN + result['link'] + Style.RESET_ALL}")
+        print(f"Skills: {result['skills']}")
+        print(f"Country: {Fore.CYAN + Back.MAGENTA + result['country'] + Style.RESET_ALL}")
         print()
