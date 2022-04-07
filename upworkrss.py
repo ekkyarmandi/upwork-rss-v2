@@ -76,19 +76,19 @@ class UpWorkRSS:
         for key in profile:
             if key == "queries":
                 for q in profile[key]:
-                    self.rss_queries.append(update_query(self.param,q=q))
+                    self.rss_queries.append(update_query(self.param.copy(),q=q))
             elif key == "title":
                 for t in profile[key]:
-                    self.rss_queries.append(update_query(self.param,title=t))
+                    self.rss_queries.append(update_query(self.param.copy(),title=t))
             elif key == "skills":
                 for s in profile[key]:
                     skill = str(self.categories_skills['Skills'][s])
-                    self.rss_queries.append(update_query(self.param,ontology_skill_uid=skill))
+                    self.rss_queries.append(update_query(self.param.copy(),ontology_skill_uid=skill))
             elif key == "categories":
                 categories = []
                 for c in profile[key]:
                     categories.append(str(self.categories_skills['Categories'][c]))
-                self.rss_queries.append(update_query(self.param,subcategory2_uid=",".join(categories)))
+                self.rss_queries.append(update_query(self.param.copy(),subcategory2_uid=",".join(categories)))
     
     def gather(self,entry):
         '''
@@ -101,7 +101,7 @@ class UpWorkRSS:
             Replace some character into readable sign.
             :param/return text: str -> target text
             '''
-            signs = json.load(open("./json/signs.json"))
+            signs = json.load(open("json/signs.json"))
             while any([True if s in text else False for s in signs]):
                 for key,value in signs.items():
                     text = text.replace(key,value)
