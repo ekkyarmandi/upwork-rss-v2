@@ -70,11 +70,17 @@ if args.create_database:
 
 elif args.query:
 
-    # call the query
-    model = UpWorkRSS(RSS)
-    model.read_profile(
-        path=args.profile
-    )
-    model.parse_all()
+    while True:
 
-    # printout the results
+        # call the query
+        model = UpWorkRSS(RSS)
+        model.read_profile(
+            path=args.profile
+        )
+        model.parse_all()
+
+        # printout the results
+        ostools.print_entries(
+            time_constrain=2,
+            time_unit="hour"
+        )
