@@ -182,4 +182,7 @@ if __name__ == "__main__":
     model.read_profile("profile/scraping.json")
     model.parse_all()
 
-    ostools.print_entries(time_constrain=2,time_unit="hour")
+    ostools.print_entries(
+        time_constrain=2,
+        time_unit="hour"
+    )
