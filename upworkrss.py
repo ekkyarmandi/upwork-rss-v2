@@ -1,5 +1,4 @@
 # import libraries
-from tqdm import tqdm
 from rss import RSS
 import feedparser
 import ostools
@@ -9,11 +8,11 @@ import json
 import re
 
 # Todo
-# 1. Read User RSS, User Query (including adding skills and categories) ✔
-# 2. Retrive all data using feedparser ✔
-# 3. Pushed all data into database ✔
-# 4. Pull and filter specific information
-# 5. Printout the job post on the terminal
+# 1. Read User RSS, User Query (including adding skills and categories) ✔ (6/4/2022)
+# 2. Retrive all data using feedparser ✔ (6/4/2022)
+# 3. Pushed all data into database ✔ (6/4/2022)
+# 4. Pull and filter specific information ✔ (7/4/2022)
+# 5. Printout the job post on the terminal ✔ (7/4/2022)
 
 class UpWorkRSS:
 
@@ -161,8 +160,8 @@ class UpWorkRSS:
         '''
 
         # iterate gatherd queries
-        bar_format = "querying rss url {percentage:3.2f}% ({elapsed_s:.2f} sec)"
-        for param in tqdm(self.rss_queries, bar_format=bar_format):
+        # bar_format = "querying rss url {percentage:3.2f}% ({elapsed_s:.2f} sec)"
+        for param in self.rss_queries:
             
             # turn dictionary into url
             params = [str(k) + "=" + str(v) for k,v in param.items() if v != None]
