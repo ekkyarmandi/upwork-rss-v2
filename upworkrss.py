@@ -96,6 +96,17 @@ class UpWorkRSS:
         Gather job entry.
         :param entry: dict -> job feed entry
         '''
+
+        def replace(text):
+            '''
+            Replace some character into readable sign.
+            :param/return text: str -> target text
+            '''
+            signs = json.load(open("./json/signs.json"))
+            while any([True if s in text else False for s in signs]):
+                for key,value in signs.items():
+                    text = text.replace(key,value)
+            return text
         
         # find job title and hashing it
         job_title = entry['title'].replace("- Upwork","").strip()
@@ -104,7 +115,7 @@ class UpWorkRSS:
         # assign initial value
         job = {
             "hash": hashlib.md5(encoded_str).hexdigest(),
-            "title": format(job_title),
+            "title": replace(job_title),
             "link": entry['link'].strip("?source=rss"),
             "budget": None,
             "skills": None
@@ -112,7 +123,7 @@ class UpWorkRSS:
         
         # find text with bold
         rm = []
-        details = format(entry['content'][0]['value'])
+        details = replace(entry['content'][0]['value'])
         for b in re.finditer("(?<=\<b\>)(.*?)(?=\<\/b\>)",details):
             rm.append(b.start())
             title = details[b.start():b.end()]
