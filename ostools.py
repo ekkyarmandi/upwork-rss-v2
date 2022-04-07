@@ -1,11 +1,11 @@
+# database, time, and os libraries
 import sqlite3
 import json
 import re
 import os
-
 from datetime import datetime
-import time
 
+# text color libraries
 import colorama
 from colorama import Fore, Back, Style
 colorama.init()
@@ -47,19 +47,13 @@ def insert(dict):
     '''
     Insert data into database
     '''
-    def remove_none(dict):
-        '''
-        Change None value into null string
-        '''
-        for k,v in dict.items():
-            if v == None:
-                dict[k] = "null"
-        return dict
     blacklist = json.load(open("json/blacklist-category.json"))
     con = sqlite3.connect("database/jobs.db")
     cur = con.cursor()
     if dict['category'] not in blacklist:
-        dict = remove_none(dict)
+        for k,v in dict.items():
+            if v == None:
+                dict[k] = "null"
         cmd = """INSERT or IGNORE INTO jobs VALUES (?,?,?,?,?,?,?,?,?,?)"""
         cur.execute(cmd, (
             dict['hash'],
@@ -79,6 +73,9 @@ def insert(dict):
     con.close()
 
 def query_all(database,table,time_constrain,time_unit):
+    '''
+    Query all entries
+    '''
 
     # get time devider
     time_devider = {
@@ -116,6 +113,9 @@ def query_all(database,table,time_constrain,time_unit):
     return results
 
 def unlive_all(database,table):
+    '''
+    Set live column into false
+    '''
     con = sqlite3.connect(database)
     cur = con.cursor()
     cur.execute(f"UPDATE {table} SET live = 0")
