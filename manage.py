@@ -1,7 +1,7 @@
 # necessary libraries
 import argparse
-from venv import create
 import ostools
+import time
 
 # UpWorkRSS class
 from upworkrss import UpWorkRSS
@@ -84,3 +84,6 @@ elif args.query:
             time_constrain=2,
             time_unit="hour"
         )
+
+        # delay the loop
+        time.sleep(60*1)
