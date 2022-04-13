@@ -70,10 +70,11 @@ if args.create_database:
 
 elif args.query:
 
+    # load the object
+    model = UpWorkRSS(RSS)
     while True:
 
         # call the query
-        model = UpWorkRSS(RSS)
         model.read_profile(
             path=args.profile
         )

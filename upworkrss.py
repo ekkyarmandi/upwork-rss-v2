@@ -17,7 +17,6 @@ import re
 class UpWorkRSS:
 
     def __init__(self, rss):
-        self.rss_queries = []
         self.categories_skills = json.load(open("json/categories-and-skills.json"))
         self.rss_url_breakdown(rss)
         ostools.unlive_all(
@@ -70,6 +69,7 @@ class UpWorkRSS:
             return query_param
 
         # read profile
+        self.rss_queries = []
         profile = json.load(open(path))
 
         # iterate profile and read each key as seperate rss query parameter
