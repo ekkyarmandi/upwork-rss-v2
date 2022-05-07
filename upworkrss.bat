@@ -1,0 +1,1 @@
+"wt" "python" "manage.py" "query" "-p" "profile\scraping.json"
