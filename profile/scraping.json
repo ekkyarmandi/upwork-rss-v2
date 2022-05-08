@@ -1,8 +1,8 @@
 {
     "queries": [
         "scraping",
-        "extracting",
         "extract",
+        "scrape",
         "scrapy",
         "smart contract",
         "nft"
@@ -10,6 +10,7 @@
     "title": [
         "scrapy",
         "python",
+        "solidity",
         "smart contract",
         "nft"
     ],
@@ -21,7 +22,6 @@
     "categories": [
         "Data Mining & Management",
         "Data Extraction / ETL",
-        "Game & Development",
         "Art & Illustrattion"
     ]
 }
