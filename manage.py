@@ -63,7 +63,7 @@ args = parser.parse_args()
 if args.create_database:
 
     # create the database
-    query.create_table(
+    sql_fun.create_table(
         database=args.output,
         table=args.table
     )

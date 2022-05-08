@@ -27,8 +27,6 @@ class UpWorkRSS:
         ''' Query result based on profile input '''
 
         if self.initial:
-            try: os.system("clear")
-            except: os.system("cls")
             self.initial = False
             pbar = tqdm(desc="Parser RSS Url",total=len(self.queries),unit="q")
 
@@ -44,7 +42,9 @@ class UpWorkRSS:
             
             try: pbar.update(1)
             except: pass
-        try: pbar.close()
+        try:
+            pbar.close()
+            os.system("cls")
         except: pass
 
     def digest(self):

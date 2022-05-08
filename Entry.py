@@ -14,7 +14,10 @@ class Entry:
 
         # refine description text
         if len(self.description) > 360:
-            self.description = self.description[:360] + "..."
+            self.description = self.description[:360].strip() + "..."
+        
+        if len(self.title) > 100:
+            self.title = self.title[:100].strip() + "..."
 
         # refine budget text
         if self.budget == "N/A":
