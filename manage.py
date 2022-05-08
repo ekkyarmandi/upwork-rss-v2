@@ -1,11 +1,16 @@
 # necessary libraries
 import argparse
-import ostools
 import time
 
-# UpWorkRSS class
-from upworkrss import UpWorkRSS
-from rss import RSS
+# import local library
+from UpWorkRSS import UpWorkRSS
+import query as sql_fun
+
+'''
+commands: {create_database,query}
+usage: python manage.py create_database --output <database_path> --table <table_name>
+usage: python manage.py query --profile <profile_path>
+'''
 
 parser = argparse.ArgumentParser(description="UpWork RSS Tools")
 
@@ -20,7 +25,7 @@ databases = subparser.add_parser(
 )
 
 databases.add_argument(
-    "create_database",    
+    "create_database",
     action="store_true",
     help="Create new database"
 )
@@ -57,34 +62,30 @@ args = parser.parse_args()
 
 if args.create_database:
 
-    # check if the output is correct
-    db_path = args.output.split("/")
-    db_path = "/".join(db_path[:-1])
-    ostools.check_folders(db_path)
-
     # create the database
-    ostools.create_table(
+    query.create_table(
         database=args.output,
         table=args.table
     )
 
 elif args.query:
 
-    # load the object
-    model = UpWorkRSS(RSS)
+    # initiate the object
+    rss = UpWorkRSS(args.profile)
+    sql_fun.reset_printed(database="database/job_posts.db")
+
+    # parse rss url
     while True:
+        rss.get()
 
-        # call the query
-        model.read_profile(
-            path=args.profile
-        )
-        model.parse_all()
-
-        # printout the results
-        ostools.print_entries(
-            time_constrain=2,
-            time_unit="hour"
+        # query and print all results
+        results = sql_fun.all_entries(
+            database="database/job_posts.db",
+            time_constrain=2
         )
 
-        # delay the loop
+        for post in results:
+            print(post)
+
+        # put delay for 1 min
         time.sleep(60*1)

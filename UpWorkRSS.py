@@ -2,6 +2,7 @@
 from tqdm import tqdm
 import feedparser
 import json
+import os
 
 # import local functions and libraries
 from JobPost import JobPost
@@ -26,6 +27,9 @@ class UpWorkRSS:
         ''' Query result based on profile input '''
 
         if self.initial:
+            try: os.system("clear")
+            except: os.system("cls")
+            self.initial = False
             pbar = tqdm(desc="Parser RSS Url",total=len(self.queries),unit="q")
 
         for url in self.queries:
