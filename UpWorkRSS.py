@@ -9,13 +9,16 @@ from JobPost import JobPost
 from Queries import Queries
 import query
 
+# import rich libraries
+from rich.console import Console
+console = Console()
+
 
 class UpWorkRSS:
 
     categories_skills = json.load(open("json/categories-and-skills.json"))
     categories = categories_skills['Categories']
     skills = categories_skills['Skills']
-    initial = True
     queries = []
     count = 0
 
@@ -26,26 +29,16 @@ class UpWorkRSS:
     def get(self):
         ''' Query result based on profile input '''
 
-        if self.initial:
-            self.initial = False
-            pbar = tqdm(desc="Parser RSS Url",total=len(self.queries),unit="q")
-
-        for url in self.queries:
-            results = feedparser.parse(url)
-            for entry in results['entries']:
-                job = JobPost(entry)
-                query.insert(
-                    database="database/job_posts.db",
-                    entry=job.to_dict()
-                )
-                self.count += 1
-            
-            try: pbar.update(1)
-            except: pass
-        try:
-            pbar.close()
-            os.system("cls")
-        except: pass
+        with console.status("[bright_green]Parser the query URL[/]") as status:
+            for url in self.queries:
+                results = feedparser.parse(url)
+                for entry in results['entries']:
+                    job = JobPost(entry)
+                    query.insert(
+                        database="database/job_posts.db",
+                        entry=job.to_dict()
+                    )
+                    self.count += 1
 
     def digest(self):
         ''' Digest rss.txt and turn it into variable before use it as url parameter'''

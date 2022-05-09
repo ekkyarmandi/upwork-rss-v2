@@ -4,7 +4,11 @@ import time
 
 # import local library
 from UpWorkRSS import UpWorkRSS
+from custom_rich import rich_text
+from rich import print
 import query as sql_fun
+
+# import rich libraries
 
 '''
 commands: {create_database,query}
@@ -85,7 +89,9 @@ elif args.query:
         )
 
         for post in results:
-            print(post)
+            entry = rich_text(post)
+            print(entry)
+            print()
 
         # put delay for 1 min
         time.sleep(60*1)

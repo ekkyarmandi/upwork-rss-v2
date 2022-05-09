@@ -2,15 +2,16 @@ import time
 
 class Entry:
 
-    def __init__(self, title, description, link, budget, timestamp, category, tags, country):
-        self.title=title
-        self.description=description
-        self.link=link
-        self.budget=budget
-        self.timestamp=timestamp
-        self.category=category
-        self.tags=", ".join(["#"+tag for tag in tags.split(",")])
-        self.country=country
+    def __init__(self, entry):
+        self.hash=entry[0]
+        self.title=entry[1]
+        self.description=entry[2]
+        self.link=entry[3]
+        self.budget=entry[4]
+        self.timestamp=entry[5]
+        self.category=entry[6]
+        self.tags=" ".join(["[white on blue]#"+tag.replace(" ","")+"[/]" for tag in entry[7].split(",")])
+        self.country=entry[8]
 
         # refine description text
         if len(self.description) > 360:
@@ -32,6 +33,11 @@ class Entry:
         hours, seconds = divmod(seconds,3600)
         minutes, seconds = divmod(seconds,60)
         return f"{hours} hour(s) and {minutes} minute(s) ago"
+
+    def difftime(self) -> int:
+        seconds = int(time.time()-self.timestamp)
+        hour, _ = divmod(seconds,3600)
+        return hour
 
     def __str__(self):
         n = 109

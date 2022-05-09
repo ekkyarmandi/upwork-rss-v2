@@ -121,17 +121,7 @@ def all_entries(database: str, table: str = "jobs", time_constrain: int = 3) -> 
             cur.execute(f"UPDATE {table} SET printed = 1 WHERE hash=?",(entry['hash'],))
             cur.execute(f"SELECT * FROM {table} WHERE hash=?",(entry['hash'],))
             result = cur.fetchone()
-            post = Entry(
-                title=result[1],
-                description=result[2],
-                link=result[3],
-                budget=result[4],
-                timestamp=result[5],
-                category=result[6],
-                tags=result[7],
-                country=result[8]
-            )
-            results.append(post)
+            results.append(Entry(result))
         
         # delete the post if the post is outdated
         elif entry['posted_on'] > time_constrain:
@@ -153,5 +143,5 @@ if __name__ == "__main__":
     database = "database/job_posts.db"
     reset_printed(database)
     results = all_entries(database)
-    for post in results:
-        print(post)
+    for entry in results:
+        print(entry)
