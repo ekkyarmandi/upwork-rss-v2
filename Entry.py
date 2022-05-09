@@ -32,7 +32,10 @@ class Entry:
         seconds = int(time.time()-self.timestamp)
         hours, seconds = divmod(seconds,3600)
         minutes, seconds = divmod(seconds,60)
-        return f"{hours} hour(s) and {minutes} minute(s) ago"
+        if hours == 0:
+            return f"{minutes} minute(s) ago"
+        else:
+            return f"{hours} hour(s) and {minutes} minute(s) ago"
 
     def difftime(self) -> int:
         seconds = int(time.time()-self.timestamp)

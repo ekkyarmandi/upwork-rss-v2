@@ -12,7 +12,7 @@ def rich_text(entry):
     link = Text(entry.link, style="bright_blue")
     description = Panel(Text(entry.description, justify="left"), box=box.HORIZONTALS)
     tags = entry.tags
-    location = Text(f"\n📍 {entry.country}", style="cyan", justify="right")
+    location = Text(f"📍 {entry.country}", style="cyan", justify="right")
 
     # custom the budget text output
     if "N/A" not in entry.budget:
@@ -22,10 +22,10 @@ def rich_text(entry):
 
     # custom the timestamp text output
     if entry.difftime() <= 3:
-        timestamp = Text(entry.calculate_time(), justify="right")
+        timestamp = Text("\nPosted on: "+entry.calculate_time(), justify="right")
     else:
         timestamp = datetime.fromtimestamp(entry.timestamp)
-        timestamp = Text(timestamp.strftime("%d %b %Y"), justify="right")
+        timestamp = Text("\nPosted on: "+timestamp.strftime("%d %b %Y"), justify="right")
 
     # create a grid table
     grid = Table.grid("")
@@ -33,8 +33,8 @@ def rich_text(entry):
     grid.add_row(link)
     grid.add_row(description)
     grid.add_row(Align.center(tags))
-    grid.add_row(location)
     grid.add_row(timestamp)
+    grid.add_row(location)
 
     # create main panel
     main_panel = Panel(

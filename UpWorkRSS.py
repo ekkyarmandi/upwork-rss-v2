@@ -29,8 +29,14 @@ class UpWorkRSS:
     def get(self):
         ''' Query result based on profile input '''
 
-        with console.status("[bright_green]Parser the query URL[/]") as status:
-            for url in self.queries:
+        with console.status("[bright_green]Parser the RSS[/]") as status:
+            for i,url in enumerate(self.queries):
+                
+                # updating the waiting text
+                perc = 100*(i+1)/len(self.queries)
+                status.update(f"[bright_green]Parser the RSS ({perc:.2f}%)[/]")
+
+                # continue parse the rss url
                 results = feedparser.parse(url)
                 for entry in results['entries']:
                     job = JobPost(entry)
