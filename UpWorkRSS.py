@@ -4,7 +4,6 @@ import json
 
 # import local functions and libraries
 from JobPost import JobPost
-from Queries import Queries
 
 # import rich libraries
 from rich.console import Console

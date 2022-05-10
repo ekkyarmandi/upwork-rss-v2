@@ -3,10 +3,9 @@ import argparse
 import time
 
 # import local library
-from UpWorkRSS import UpWorkRSS
-from archive.custom_rich import rich_text
-from rich import print
 import query as sql_fun
+from UpWorkRSS import UpWorkRSS
+from rich import print
 
 # import rich libraries
 
