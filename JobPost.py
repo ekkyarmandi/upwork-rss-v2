@@ -1,12 +1,13 @@
 from bs4 import BeautifulSoup
 import hashlib
+import query
 import time
 import re
 
 
 def refine_text(text):
-    text = text.lstrip(":").strip()
-    return text
+    text = text.lstrip(":")
+    return text.strip()
 
 class JobPost:
 
@@ -41,11 +42,9 @@ class JobPost:
         self.timestamp = int(time.mktime(entry['published_parsed']))+(7*3600)
 
     def hashing(self, title):
-        job_title = title.rstrip(" - Upwork")
-        job_title = re.findall("[A-Za-z0-9]+",job_title)
-        job_title = " ".join(job_title)
-        self.title = job_title
-        self.hash = hashlib.md5(bytes(job_title,"utf-8")).hexdigest()
+        title = title.strip("Upwork").strip()
+        self.title = " ".join(re.findall("[A-Za-z0-9]+",title))
+        self.hash = hashlib.md5(bytes(self.title,"utf-8")).hexdigest()
 
     def find_description(self, text):
         b = re.search("<b>",text)
@@ -91,6 +90,12 @@ class JobPost:
             country=self.country,
             budget=self.budget,
             tags=",".join(self.tags)
+        )
+
+    def insert(self):
+        query.insert(
+            database="database/job_posts.db",
+            entry=self.to_dict()
         )
 
     def __str__(self):
