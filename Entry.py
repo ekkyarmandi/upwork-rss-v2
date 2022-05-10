@@ -17,7 +17,7 @@ class Entry:
         self.budget=entry[4]
         self.timestamp=entry[5]
         self.category=entry[6]
-        self.tags=" ".join(["[white on blue]#"+tag.replace(" ","")+"[/]" for tag in entry[7].split(",")])
+        self.tags=" ".join(["[magenta]#"+tag.replace(" ","")+"[/]" for tag in entry[7].split(",")])
         self.country=entry[8]
 
         # refine description text
@@ -58,7 +58,7 @@ class Entry:
     
         # define the text format
         title = f"[bright_green bold link={self.link}]{self.title.upper()}[/]"
-        description = Panel(Text(self.description, justify="left"))
+        description = Panel(Text(self.description, justify="left"), expand=True)
         location = Text(f"📍 {self.country}", style="cyan", justify="right")
         link = f"[cyan]{self.link}[/]"
         tags = self.tags
@@ -77,7 +77,7 @@ class Entry:
             timestamp = Text("\nPosted on: "+timestamp.strftime("%d %b %Y"), justify="right")
 
         # create a grid table
-        grid = Table.grid("")
+        grid = Table.grid("", expand=True)
         grid.add_row(title)
         grid.add_row(link)
         grid.add_row(description)
@@ -96,4 +96,4 @@ class Entry:
         )
 
         # return rich renderable object
-        return main_panel
+        return Align.center(main_panel)
