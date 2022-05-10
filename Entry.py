@@ -1,8 +1,15 @@
+from rich.panel import Panel
+from rich.table import Table
+from rich.text import Text
+from rich.align import Align
+from datetime import datetime
 import time
 
 class Entry:
 
     def __init__(self, entry):
+
+        # assign the entry into self variable
         self.hash=entry[0]
         self.title=entry[1]
         self.description=entry[2]
@@ -28,7 +35,9 @@ class Entry:
         else:
             self.budget = "Fixed Price: " + self.budget
 
-    def calculate_time(self):
+    def calculate_time(self) -> str:
+        ''' Convert timestamp into string '''
+
         seconds = int(time.time()-self.timestamp)
         hours, seconds = divmod(seconds,3600)
         minutes, seconds = divmod(seconds,60)
@@ -38,26 +47,53 @@ class Entry:
             return f"{hours} hour(s) and {minutes} minute(s) ago"
 
     def difftime(self) -> int:
+        ''' Calculate time differentiation '''
+
         seconds = int(time.time()-self.timestamp)
         hour, _ = divmod(seconds,3600)
         return hour
 
-    def __str__(self):
-        n = 109
-        msg = [
-            " | ".join([
-                self.title,
-                self.category,
-                self.budget,
-                self.calculate_time()
-            ]),
-            "-"*n,
-            self.description,
-            "-"*n,
-            self.link,
-            "-"*n,
-            "Tags: " + self.tags,
-            "Country: " + self.country,
-            "\n"
-        ]
-        return "\n".join(msg)
+    def to_rich(self) -> Panel:
+        ''' Turn string it into rich renderable format '''
+    
+        # define the text format
+        title = f"[bright_green bold link={self.link}]{self.title.upper()}[/]"
+        description = Panel(Text(self.description, justify="left"))
+        location = Text(f"📍 {self.country}", style="cyan", justify="right")
+        link = f"[cyan]{self.link}[/]"
+        tags = self.tags
+
+        # custom the budget text output
+        if "N/A" not in self.budget:
+            budget = f"🤑 [bright_green bold blink]{self.budget}[/]"
+        else:
+            budget = f"🤔 [yellow bold]{self.budget}[/]"
+
+        # custom the timestamp text output
+        if self.difftime() <= 3:
+            timestamp = Text("\nPosted on: "+self.calculate_time(), justify="right")
+        else:
+            timestamp = datetime.fromtimestamp(self.timestamp)
+            timestamp = Text("\nPosted on: "+timestamp.strftime("%d %b %Y"), justify="right")
+
+        # create a grid table
+        grid = Table.grid("")
+        grid.add_row(title)
+        grid.add_row(link)
+        grid.add_row(description)
+        grid.add_row(Align.center(tags))
+        grid.add_row(timestamp)
+        grid.add_row(location)
+
+        # create main panel
+        main_panel = Panel(
+            grid,
+            title=self.category+" - "+self.hash,
+            subtitle=budget,
+            title_align="right",
+            border_style="bright_green",
+            width=120
+        )
+
+        # return rich renderable object
+        return main_panel
