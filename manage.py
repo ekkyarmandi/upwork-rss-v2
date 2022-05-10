@@ -4,7 +4,7 @@ import time
 
 # import local library
 from UpWorkRSS import UpWorkRSS
-from custom_rich import rich_text
+from archive.custom_rich import rich_text
 from rich import print
 import query as sql_fun
 
@@ -12,31 +12,31 @@ import query as sql_fun
 
 '''
 commands: {create_database,query}
-usage: python manage.py create_database --output <database_path> --table <table_name>
-usage: python manage.py query --profile <profile_path>
+usage: python manage.py create_table [-p] --path <database_path> [-t] --table <table_name>
+usage: python manage.py query [-p] --profile <profile_path>
 '''
 
 parser = argparse.ArgumentParser(description="UpWork RSS Tools")
 
-parser.set_defaults(create_database=False)
+parser.set_defaults(create_table=False)
 parser.set_defaults(query=False)
 
 subparser = parser.add_subparsers()
 
 databases = subparser.add_parser(
-    "create_database",    
-    help="Create new database"
+    "create_table",    
+    help="Create new table"
 )
 
 databases.add_argument(
-    "create_database",
+    "create_table",
     action="store_true",
-    help="Create new database"
+    help="Create new table"
 )
 
 databases.add_argument(
-    "-o", "--output",
-    default="database/jobs.db",
+    "-p", "--path",
+    default="database/job_posts.db",
     help="Destination path"
 )
 
@@ -64,7 +64,7 @@ query.add_argument(
 
 args = parser.parse_args()
 
-if args.create_database:
+if args.create_table:
 
     # create the database
     sql_fun.create_table(
@@ -76,7 +76,7 @@ elif args.query:
 
     # initiate the object
     rss = UpWorkRSS(args.profile)
-    sql_fun.reset_printed(database="database/job_posts.db")
+    sql_fun.clear("database/job_posts.db")
 
     # parse rss url
     while True:
@@ -85,12 +85,11 @@ elif args.query:
         # query and print all results
         results = sql_fun.all_entries(
             database="database/job_posts.db",
-            time_constrain=2
+            time_constrain=2 #hours
         )
 
-        for post in results:
-            entry = rich_text(post)
-            print(entry)
+        for entry in results:
+            print(entry.to_rich())
             print()
 
         # put delay for 1 min
