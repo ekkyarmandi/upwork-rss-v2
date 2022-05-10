@@ -36,21 +36,7 @@ def create_table(database: str, table: str) -> None:
     con.close()
 
 def insert(database: str, entry: dict) -> None:
-    '''
-    Insert data into database
-    :param database: str, database path
-    :param entry: str, an entries
-    '''
-    def remove_none(dict):
-        '''
-        Change None value into null string
-        :param dict: dict
-        :return:
-        '''
-        for k,v in dict.items():
-            if v == None:
-                dict[k] = "null"
-        return dict
+    ''' Insert data into database '''
 
     # load the blacklist data
     forbidden_category = json.load(open("json/blacklist-category.json"))
@@ -60,7 +46,6 @@ def insert(database: str, entry: dict) -> None:
     con = sqlite3.connect(database)
     cur = con.cursor()
     if entry['category'] not in forbidden_category and all([t not in entry['description'] for t in forbidden_text]):
-        entry = remove_none(entry)
         cmd = """INSERT or IGNORE INTO jobs VALUES (?,?,?,?,?,?,?,?,?,?)"""
         cur.execute(cmd, (
             entry['hash'],
@@ -77,16 +62,6 @@ def insert(database: str, entry: dict) -> None:
         cur.execute("UPDATE jobs SET budget = NULL WHERE budget = 'null'")
         cur.execute("UPDATE jobs SET tags = NULL WHERE tags = 'null'")
         con.commit()
-    con.close()
-
-def reset_printed(database: str, table: str = "jobs") -> None:
-    '''
-    Set printed column into false
-    '''
-    con = sqlite3.connect(database)
-    cur = con.cursor()
-    cur.execute(f"UPDATE {table} SET printed = 0")
-    con.commit()
     con.close()
 
 def all_entries(database: str, table: str = "jobs", time_constrain: int = 3) -> list:
@@ -134,14 +109,30 @@ def all_entries(database: str, table: str = "jobs", time_constrain: int = 3) -> 
     # return the results
     return results
 
+def clear(database: str, table: str = "jobs") -> None:
+    con = sqlite3.connect(database)
+    cur = con.cursor()
+    cur.execute(f"DELETE FROM {table};")
+    con.commit()
+    con.close()
+
+def reset(database: str, table: str = "jobs") -> None:
+    con = sqlite3.connect(database)
+    cur = con.cursor()
+    cur.execute(f"UPDATE {table} SET printed = 0;")
+    con.commit()
+    con.close()
+
+
 if __name__ == "__main__":
+
+    from rich import print
 
     # Test: Create a table
     # create_table("database/job_posts.db","jobs")
 
     # Test: Do jobs query from database
-    database = "database/job_posts.db"
-    reset_printed(database)
-    results = all_entries(database)
+    reset("database/job_posts.db")
+    results = all_entries("database/job_posts.db")
     for entry in results:
-        print(entry)
+        print(entry.to_rich())
