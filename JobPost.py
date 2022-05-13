@@ -27,7 +27,7 @@ class JobPost:
         self.hashing(entry['title'])
 
         # refine the link
-        self.link = entry['link'].rstrip("?source=rss")
+        self.link = entry['link']
 
         # collect job description, job category, origin country, budget, and skill tags
         text = entry['content'][0]['value']
