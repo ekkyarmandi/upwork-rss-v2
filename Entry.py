@@ -60,7 +60,6 @@ class Entry:
         title = f"[bright_green bold link={self.link}]{self.title.upper()}[/]"
         description = Panel(Text(self.description, justify="left"), expand=True)
         location = Text(f"📍 {self.country}", style="cyan", justify="right")
-        link = f"[cyan]{self.link}[/]"
         tags = self.tags
 
         # custom the budget text output
@@ -79,7 +78,6 @@ class Entry:
         # create a grid table
         grid = Table.grid("", expand=True)
         grid.add_row(title)
-        grid.add_row(link)
         grid.add_row(description)
         grid.add_row(Align.center(tags))
         grid.add_row(timestamp)
