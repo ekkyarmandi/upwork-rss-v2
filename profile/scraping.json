@@ -1,27 +1,21 @@
 {
     "queries": [
         "scraping",
-        "extract",
+        "extraction",
         "scrape",
         "scrapy",
-        "smart contract",
-        "nft"
+        "text mining",
+        "text classification",
+        "flask"
     ],
     "title": [
         "scrapy",
-        "python",
-        "solidity",
-        "smart contract",
-        "nft"
+        "python"
     ],
     "skills": [
         "Scrapy",
         "BeautifulSoup",
-        "Python"
-    ],
-    "categories": [
-        "Data Mining & Management",
-        "Data Extraction / ETL",
-        "Art & Illustrattion"
+        "Python",
+        "Flask"
     ]
 }
